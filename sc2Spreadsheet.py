@@ -4,6 +4,17 @@ import time
 from datetime import datetime
 from s2protocol import versions
 
+def getGameTime(header):
+    # game time from sc2 client / game loops to time
+    diff = (8*60+30)/(3*60+10.50)
+    seconds = round(header['m_elapsedGameLoops'] * diff)
+    # converting to time format
+    m, s = divmod(seconds, 60)
+    h, m = divmod(m, 60)
+
+    return f'{h:d}:{m:02d}:{s:02d}'
+
+
 archive = mpyq.MPQArchive('a.sc2replay')
 # archive = mpyq.MPQArchive('Efemeryda ER.sc2replay')
 contents = archive.header['user_data_header']['content']
@@ -50,13 +61,6 @@ print(datetime.fromtimestamp(gameDetails[2]))
 # contents = archive.read_file('replay.load.info')
 # protocolLoadInfo = protocol.decode_replay_load_info(contents)
 
-##game time from sc2 client / game loops to time
-diff = (8*60+30)/(3*60+10.50)
-seconds=round(header['m_elapsedGameLoops']*diff)
 
-m, s = divmod(seconds, 60)
-h, m = divmod(m, 60)
 
-gameTime = f'{h:d}:{m:02d}:{s:02d}'
-
-print(gameTime)
+print(getGameTime(header))

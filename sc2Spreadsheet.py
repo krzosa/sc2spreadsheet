@@ -1,5 +1,6 @@
 import mpyq
 import pprint #pretty print
+import time
 from datetime import datetime
 from s2protocol import versions
 
@@ -14,7 +15,6 @@ contents = archive.read_file('replay.details')
 protocolDetails = protocol.decode_replay_details(contents)
 contents = archive.read_file('replay.initData')
 protocolInitData = protocol.decode_replay_initdata(contents)
-
 
 gameDetails = []
 playerInfo = []
@@ -45,3 +45,18 @@ print(datetime.fromtimestamp(gameDetails[2]))
 # print(protocolDetails['m_timeLocalOffset'])
 
 # pprint.pprint(protocolInitData['m_syncLobbyState']['m_userInitialData'][1]['m_scaledRating'])
+
+
+# contents = archive.read_file('replay.load.info')
+# protocolLoadInfo = protocol.decode_replay_load_info(contents)
+
+##game time from sc2 client / game loops to time
+diff = (8*60+30)/(3*60+10.50)
+seconds=round(header['m_elapsedGameLoops']*diff)
+
+m, s = divmod(seconds, 60)
+h, m = divmod(m, 60)
+
+gameTime = f'{h:d}:{m:02d}:{s:02d}'
+
+print(gameTime)

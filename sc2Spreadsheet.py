@@ -16,7 +16,7 @@ from replay_info import ReplayInfo
 
 def getListOfReplayNames(directory):
     
-    # TODO: dir sort by date
+    # TODO: sort by date ALSO I SHOUKD USE A PYTHON LIBRARY TO DO THIS
     # pathing problems when pointing at sc2 replay repo
     if platform.system()=='Windows': 
         ls = subprocess.run(['cmd.exe','/c', 'dir ' + directory + ' /b /a-d'], capture_output = True,

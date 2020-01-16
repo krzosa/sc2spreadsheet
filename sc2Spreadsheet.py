@@ -36,12 +36,22 @@ def getGameDate(protocolDetails):
 def getPlayerInfo(protocolDetails, protocolInitData, playerCount=2):
     playerInfo = []
     for i in range(0, playerCount):
-        playerInfo.append([
-            protocolDetails['m_playerList'][i]['m_name'],
-            protocolDetails['m_playerList'][i]['m_race'],
-            protocolDetails['m_playerList'][i]['m_result'],
-            protocolInitData['m_syncLobbyState']['m_userInitialData'][i]['m_scaledRating'],
-            protocolInitData['m_syncLobbyState']['m_userInitialData'][i]['m_highestLeague']])
+        playerInfo.append(
+                {
+            "name": 
+                str(protocolDetails['m_playerList'][i]['m_name']),
+            "race": 
+                str(protocolDetails['m_playerList'][i]['m_race']),
+            "result":
+                str(protocolDetails['m_playerList'][i]['m_result']),
+            "mmr":
+                str(protocolInitData['m_syncLobbyState']
+                    ['m_userInitialData'][i]['m_scaledRating']),
+            "highestLeague":
+                str(protocolInitData['m_syncLobbyState']
+                    ['m_userInitialData'][i]['m_highestLeague'])
+                }
+            )
     return playerInfo
 
 
@@ -53,12 +63,12 @@ def getMapName(protocolDetails):
     return protocolDetails['m_title']
 
 
-def getProtocolDetails(protocol):
+def getProtocolDetails(protocol, archive):
     return protocol.decode_replay_details(
                 archive.read_file('replay.details'))
 
 
-def getProtocolInitData(protocol):
+def getProtocolInitData(protocol, archive):
     return protocol.decode_replay_initdata(
                 archive.read_file('replay.initData'))
 
@@ -69,38 +79,52 @@ def getHeaderAndProtocol(archive):
     protocol = versions.build(header['m_version']['m_baseBuild'])
     return [header, protocol]
 
+
+##TODO: directory
+def getListOfReplayNames(directory):
+    if platform.system()=='Windows': 
+        ls = subprocess.run(['cmd.exe','/c', 'dir /b /a-d'], capture_output = True,
+            text = True)
+    else:
+        ls = subprocess.run('ls', capture_output = True,
+        text = True)
+
+    arr = re.split("\n", ls.stdout)
+    files = []
+    for i in range(0,len(arr)):
+        if ".SC2Replay" in arr[i]:
+            files.append(arr[i])
+
+    return files
+
 # ls D:/apps
 
+def main():
 
-if platform.system()=='Windows': 
-    ls = subprocess.run(['cmd.exe','/c', 'dir /b /a-d'], capture_output = True,
-        text = True)
-else:
-    ls = subprocess.run('ls', capture_output = True,
-    text = True)
+    
+
+    replays = getListOfReplayNames('aa') # files contains all the sc2replay
+    for replay in replays:
+        archive = mpyq.MPQArchive(replay)
+        # archive = mpyq.MPQArchive('Efemeryda ER.sc2replay')
+        header, protocol = getHeaderAndProtocol(archive)
+
+        protocolDetails = getProtocolDetails(protocol, archive)
+        protocolInitData = getProtocolInitData(protocol, archive)
+
+        print(getPlayerInfo(protocolDetails, protocolInitData))
+        print(getMapName(protocolDetails))
+        print(getGameDate(protocolDetails))
+        print(getGameTime(header))
 
 
-arr = re.split("\n", ls.stdout)
-files = []
-for i in range(0,len(arr)):
-    if ".SC2Replay" in arr[i]:
-        files.append(arr[i])
 
 
-print(files) # files contains all the sc2replay
 
-archive = mpyq.MPQArchive('a.sc2replay')
-# archive = mpyq.MPQArchive('Efemeryda ER.sc2replay')
-header, protocol = getHeaderAndProtocol(archive)
 
-protocolDetails = getProtocolDetails(protocol)
-protocolInitData = getProtocolInitData(protocol)
 
-print(getPlayerInfo(protocolDetails, protocolInitData))
-print(getMapName(protocolDetails))
-print(getGameDate(protocolDetails))
-print(getGameTime(header))
-
+if __name__ == '__main__':
+    main()
 
 
 

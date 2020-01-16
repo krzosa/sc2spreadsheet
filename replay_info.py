@@ -105,11 +105,11 @@ class ReplayInfo:
 
 
     # input: index of the player(in 1v1 => 0 or 1)
-    # return: highest rank that player got
+    # return: highest rank that player got ex. MASTER
     # in s2protocol they don't specify if its highest
     # rank in season or ever achieved or in gamemode 
     def getPlayerHighestLeague(self, playerIndex):
-        return self.playerInfo[playerIndex]['highestLeague']
+        return self.playerInfo[playerIndex]['highestLeague'].name
 
 
     # return: date and time when the game happened 

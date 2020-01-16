@@ -1,4 +1,5 @@
 import gspread
+import configuration
 from oauth2client.service_account import ServiceAccountCredentials
 
 def getGoogleSheetObject():

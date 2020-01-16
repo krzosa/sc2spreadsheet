@@ -8,7 +8,7 @@ class ReplayInfo:
         self.contents = archive.header['user_data_header']['content']
         self.header = versions.latest().decode_replay_header(self.contents)
         self.protocol = versions.build(self.header['m_version']['m_baseBuild'])
-
+        
         self.protocolDetails = self.protocol.decode_replay_details(
                                 archive.read_file('replay.details'))
         self.protocolInitData = self.protocol.decode_replay_initdata(
@@ -19,22 +19,23 @@ class ReplayInfo:
     def getPlayerInfo(self, playerCount=2):
         playerInfo = []
         for i in range(0, playerCount):
-            playerInfo.append(
-                    {
+            playerInfo.append({
                 "name": 
-                    self.protocolDetails['m_playerList'][i]['m_name'].decode('utf-8'),
+                    self.protocolDetails['m_playerList']
+                                [i]['m_name'].decode('utf-8'),
                 "race": 
-                    self.protocolDetails['m_playerList'][i]['m_race'].decode('utf-8'),
+                    self.protocolDetails['m_playerList']
+                                [i]['m_race'].decode('utf-8'),
                 "result":
-                    self.protocolDetails['m_playerList'][i]['m_result'],
+                    self.protocolDetails['m_playerList']
+                                [i]['m_result'],
                 "mmr":
-                    self.protocolInitData['m_syncLobbyState']
-                        ['m_userInitialData'][i]['m_scaledRating'],
+                    self.protocolInitData['m_syncLobbyState']['m_userInitialData']
+                                [i]['m_scaledRating'],
                 "highestLeague":
                     self.highestLeague(self.protocolInitData['m_syncLobbyState']
-                        ['m_userInitialData'][i]['m_highestLeague'])
-                    }
-                )
+                                ['m_userInitialData'][i]['m_highestLeague'])
+            })
         return playerInfo
 
 
@@ -62,14 +63,34 @@ class ReplayInfo:
         return self.playerInfo[1]['race'][0] + 'v' + self.playerInfo[0]['race'][0]
 
 
-    def getDateTime(self):
+    def getPlayerName(self, index):
+        return self.playerInfo[index]['name']
+
+
+    def getPlayerRace(self, index):
+        return self.playerInfo[index]['race']
+
+
+    def getPlayerMatchResult(self, index):
+        return self.playerInfo[index]['result']
+
+
+    def getPlayerMMR(self, index):
+        return self.playerInfo[index]['mmr']
+
+
+    def getPlayerHighestLeague(self, index):
+        return self.playerInfo[index]['highestLeague']
+
+
+    def getDateAndTime(self):
         date = str(datetime.fromtimestamp(round(
                 self.protocolDetails['m_timeUTC'] / (10 * 1000 * 1000) - 11644473600 - 
                             ((self.protocolDetails['m_timeLocalOffset'] / 10000000)))))
         return date.split(' ')
 
 
-    def getGameTime(self):
+    def getDuration(self):
         # game time from sc2 client / game loops to time
         diff = (8*60+30)/(3*60+10.50)
         seconds = round(self.header['m_elapsedGameLoops'] * diff)

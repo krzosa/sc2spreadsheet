@@ -1,6 +1,8 @@
 import mpyq
 import time
-import subprocess
+import re
+import subprocess # to invoke ls or dir which lists files in a folder 
+import platform # to check users operating system
 from datetime import datetime
 from s2protocol import versions
 
@@ -8,7 +10,8 @@ from s2protocol import versions
 #   loading settings from file
 #   loading files from directory outputing stats
 #   send to spreadsheet
-#   
+#   making project modular
+#   make it compatible with different systems
 
 
 def getGameTime(header):
@@ -66,6 +69,25 @@ def getHeaderAndProtocol(archive):
     protocol = versions.build(header['m_version']['m_baseBuild'])
     return [header, protocol]
 
+# ls D:/apps
+
+
+if platform.system()=='Windows': 
+    ls = subprocess.run(['cmd.exe','/c', 'dir /b /a-d'], capture_output = True,
+        text = True)
+else:
+    ls = subprocess.run('ls', capture_output = True,
+    text = True)
+
+
+arr = re.split("\n", ls.stdout)
+files = []
+for i in range(0,len(arr)):
+    if ".SC2Replay" in arr[i]:
+        files.append(arr[i])
+
+
+print(files) # files contains all the sc2replay
 
 archive = mpyq.MPQArchive('a.sc2replay')
 # archive = mpyq.MPQArchive('Efemeryda ER.sc2replay')

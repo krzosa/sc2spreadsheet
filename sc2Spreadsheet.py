@@ -1,10 +1,9 @@
-import mpyq
-import spreadsheetUtil
-
-import platform # to check users operating system
-import subprocess # to invoke ls or dir which lists files in a folder 
+import platform  # to check users operating system
 import re
-from ReplayInfo import ReplayInfo
+import subprocess  # to invoke ls or dir which lists files in a folder
+import mpyq
+import spreadsheet_util
+from replay_info import ReplayInfo
 
 # TODO: 
 #   loading settings from file
@@ -34,7 +33,7 @@ def getListOfReplayNames(directory):
 
 # TODO: check if this is game end date or not
 
-# returns the date and time when the game was played
+
 
 
 
@@ -55,8 +54,8 @@ def main():
         matchup = replayInfo.getMatchup()
         mymmr = playerInfo[1]['mmr']
         oppmmr = playerInfo[0]['mmr']
-        date, time = replayInfo.getDateTime()
-        gameTime = replayInfo.getGameTime()
+        date, time = replayInfo.getDateAndTime()
+        gameTime = replayInfo.getDuration()
         
         print(mapName)
         print(mymmr, oppmmr)
@@ -71,7 +70,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-

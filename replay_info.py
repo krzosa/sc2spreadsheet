@@ -8,11 +8,12 @@ class ReplayInfo:
         self.contents = archive.header['user_data_header']['content']
         self.header = versions.latest().decode_replay_header(self.contents)
         self.protocol = versions.build(self.header['m_version']['m_baseBuild'])
-        
+
         self.protocolDetails = self.protocol.decode_replay_details(
                                 archive.read_file('replay.details'))
         self.protocolInitData = self.protocol.decode_replay_initdata(
                                 archive.read_file('replay.initData'))
+                                
         self.playerInfo = self.getPlayerInfo()
 
 
@@ -51,6 +52,7 @@ class ReplayInfo:
         VSAI = 0
 
 
+    # return: number of players in the lobby
     def getPlayerCount(self):
         return len(self.protocolDetails['m_playerList'])
 
@@ -59,30 +61,46 @@ class ReplayInfo:
         return str(self.protocolDetails['m_title'])
 
 
+    # return: ex. TvZ - first letters of players races
     def getMatchup(self):
         return self.playerInfo[1]['race'][0] + 'v' + self.playerInfo[0]['race'][0]
 
 
-    def getPlayerName(self, index):
-        return self.playerInfo[index]['name']
+    # input: index of the player(in 1v1 => 0 or 1)
+    # return: username
+    def getPlayerName(self, playerIndex):
+        return self.playerInfo[playerIndex]['name']
 
 
-    def getPlayerRace(self, index):
-        return self.playerInfo[index]['race']
+    # input: index of the player(in 1v1 => 0 or 1)
+    # return: players race
+    def getPlayerRace(self, playerIndex):
+        return self.playerInfo[playerIndex]['race']
 
 
-    def getPlayerMatchResult(self, index):
-        return self.playerInfo[index]['result']
+    # input: index of the player(in 1v1 => 0 or 1)
+    # return: result translates to placing
+    # 1 - first place , 2 - second place etc. 
+    def getPlayerMatchResult(self, playerIndex):
+        return self.playerInfo[playerIndex]['result']
 
 
-    def getPlayerMMR(self, index):
-        return self.playerInfo[index]['mmr']
+    # input: index of the player(in 1v1 => 0 or 1)
+    # return: players current ladder rating
+    def getPlayerMMR(self, playerIndex):
+        return self.playerInfo[playerIndex]['mmr']
 
 
-    def getPlayerHighestLeague(self, index):
-        return self.playerInfo[index]['highestLeague']
+    # input: index of the player(in 1v1 => 0 or 1)
+    # return: highest rank that player got
+    # in s2protocol they don't specify if its highest
+    # rank in season or ever achieved or in gamemode 
+    def getPlayerHighestLeague(self, playerIndex):
+        return self.playerInfo[playerIndex]['highestLeague']
 
 
+    # return: date and time when the game happened 
+    # TODO: check if its when the game ended begun
     def getDateAndTime(self):
         date = str(datetime.fromtimestamp(round(
                 self.protocolDetails['m_timeUTC'] / (10 * 1000 * 1000) - 11644473600 - 
@@ -90,14 +108,25 @@ class ReplayInfo:
         return date.split(' ')
 
 
+    # return: how long the game lasted
+    # i calculated it by taking time displayed in sc2 client
+    # and divided it by game loops which at the time I translated
+    # to regular time. It has +-1s error so no reason to change
     def getDuration(self):
-        # game time from sc2 client / game loops to time
         diff = (8*60+30)/(3*60+10.50)
         seconds = round(self.header['m_elapsedGameLoops'] * diff)
-        # converting to time format
+        # converting from game loops to time
         m, s = divmod(seconds, 60)
         h, m = divmod(m, 60)
 
         return f'{h:d}:{m:02d}:{s:02d}'
+
+    
+    # input: index of the player(in 1v1 => 0 or 1)
+    # return: 1 if player won, 0 if player lost 
+    def didPlayerWin(self, playerIndex):
+        if(self.playerInfo[playerIndex]['result'] == 1):
+            return 1
+        return 0
 
 

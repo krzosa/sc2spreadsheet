@@ -3,6 +3,7 @@ import re
 import subprocess  # to invoke ls or dir which lists files in a folder
 import mpyq
 import spreadsheet_util
+import configuration
 from replay_info import ReplayInfo
 
 # TODO: 
@@ -40,7 +41,7 @@ def getListOfReplayNames(directory):
 
 
 def main():
-    replays = getListOfReplayNames('replays') # files contains all the sc2replay
+    replays = getListOfReplayNames(configuration.replaysDirectory) # files contains all the sc2replay
     for replay in replays:
         archive = mpyq.MPQArchive(replay)
         replayInfo = ReplayInfo(archive)
@@ -56,7 +57,9 @@ def main():
         oppmmr = playerInfo[0]['mmr']
         date, time = replayInfo.getDateAndTime()
         gameTime = replayInfo.getDuration()
-        
+        highestLeague = replayInfo.getPlayerHighestLeague(0).name
+
+        print(highestLeague)
         print(mapName)
         print(mymmr, oppmmr)
 

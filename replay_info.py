@@ -3,6 +3,14 @@ from enum import Enum
 from datetime import datetime
 from s2protocol import versions
 
+
+
+# input: MPQArchive(replay) object. Which is used to unpack
+# sc2replay which is basically an archive
+# init: decoding files from the archive
+# protocolInitData contains stuff like mmr, map, game time etc.
+# protocolDetails contains info about players and some other things
+# header contains information about the game itself
 class ReplayInfo:
     def __init__(self, archive):
         self.contents = archive.header['user_data_header']['content']
@@ -13,7 +21,7 @@ class ReplayInfo:
                                 archive.read_file('replay.details'))
         self.protocolInitData = self.protocol.decode_replay_initdata(
                                 archive.read_file('replay.initData'))
-                                
+
         self.playerInfo = self.getPlayerInfo()
 
 
@@ -58,12 +66,17 @@ class ReplayInfo:
 
 
     def getMapName(self):
-        return str(self.protocolDetails['m_title'])
+        return self.protocolDetails['m_title'].decode('utf-8')
 
 
     # return: ex. TvZ - first letters of players races
     def getMatchup(self):
         return self.playerInfo[1]['race'][0] + 'v' + self.playerInfo[0]['race'][0]
+
+
+    # return: ex. ZvT
+    def getMatchupReverse(self):
+        return self.playerInfo[0]['race'][0] + 'v' + self.playerInfo[1]['race'][0]
 
 
     # input: index of the player(in 1v1 => 0 or 1)

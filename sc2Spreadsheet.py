@@ -4,7 +4,12 @@ import re
 import subprocess # to invoke ls or dir which lists files in a folder 
 import platform # to check users operating system
 from datetime import datetime
+from enum import Enum
 from s2protocol import versions
+
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+
 
 # TODO: 
 #   loading settings from file
@@ -33,6 +38,18 @@ def getGameDate(protocolDetails):
                         ((protocolDetails['m_timeLocalOffset'] / 10000000))))
 
 
+class highestLeague(Enum):
+    UNRANKED = 8
+    GM = 7
+    MASTER = 6
+    DIAMOND = 5
+    PLATINUM = 4
+    GOLD = 3
+    SILVER = 2
+    BRONZE = 1
+    VSAI = 0
+
+
 def getPlayerInfo(protocolDetails, protocolInitData, playerCount=2):
     playerInfo = []
     for i in range(0, playerCount):
@@ -48,7 +65,7 @@ def getPlayerInfo(protocolDetails, protocolInitData, playerCount=2):
                 str(protocolInitData['m_syncLobbyState']
                     ['m_userInitialData'][i]['m_scaledRating']),
             "highestLeague":
-                str(protocolInitData['m_syncLobbyState']
+                highestLeague(protocolInitData['m_syncLobbyState']
                     ['m_userInitialData'][i]['m_highestLeague'])
                 }
             )
@@ -83,30 +100,25 @@ def getHeaderAndProtocol(archive):
 ##TODO: directory
 def getListOfReplayNames(directory):
     if platform.system()=='Windows': 
-        ls = subprocess.run(['cmd.exe','/c', 'dir /b /a-d'], capture_output = True,
+        ls = subprocess.run(['cmd.exe','/c', 'dir ' + directory + ' /b /a-d'], capture_output = True,
             text = True)
     else:
-        ls = subprocess.run('ls', capture_output = True,
+        ls = subprocess.run('ls ' + directory, capture_output = True,
         text = True)
 
     arr = re.split("\n", ls.stdout)
     files = []
     for i in range(0,len(arr)):
         if ".SC2Replay" in arr[i]:
-            files.append(arr[i])
+            files.append(directory + '/' + arr[i])
 
     return files
 
-# ls D:/apps
 
 def main():
-
-    
-
-    replays = getListOfReplayNames('aa') # files contains all the sc2replay
+    replays = getListOfReplayNames('replays') # files contains all the sc2replay
     for replay in replays:
         archive = mpyq.MPQArchive(replay)
-        # archive = mpyq.MPQArchive('Efemeryda ER.sc2replay')
         header, protocol = getHeaderAndProtocol(archive)
 
         protocolDetails = getProtocolDetails(protocol, archive)
@@ -117,10 +129,13 @@ def main():
         print(getGameDate(protocolDetails))
         print(getGameTime(header))
 
-
-
-
-
+    scope = ['https://spreadsheets.google.com/feeds',
+            'https://www.googleapis.com/auth/drive']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('client.json', scope)
+    client = gspread.authorize(creds)
+    sheet = client.open("Starcraft2Spreadsheet").sheet1
+    list_of_hashes = sheet.get_all_values()
+    print(list_of_hashes)
 
 
 if __name__ == '__main__':

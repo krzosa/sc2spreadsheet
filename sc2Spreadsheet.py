@@ -30,12 +30,14 @@ def getGameTime(header):
     return f'{h:d}:{m:02d}:{s:02d}'
 
 
-# returns the time and date when the game was played
 # TODO: check if this is game end date or not
-def getGameDate(protocolDetails):
-    return datetime.fromtimestamp(round(
+
+# returns the date and time when the game was played
+def getDateTime(protocolDetails):
+    date = str(datetime.fromtimestamp(round(
             protocolDetails['m_timeUTC'] / (10 * 1000 * 1000) - 11644473600 - 
-                        ((protocolDetails['m_timeLocalOffset'] / 10000000))))
+                        ((protocolDetails['m_timeLocalOffset'] / 10000000)))))
+    return date.split(' ')
 
 
 class highestLeague(Enum):
@@ -56,14 +58,14 @@ def getPlayerInfo(protocolDetails, protocolInitData, playerCount=2):
         playerInfo.append(
                 {
             "name": 
-                str(protocolDetails['m_playerList'][i]['m_name']),
+                protocolDetails['m_playerList'][i]['m_name'].decode('utf-8'),
             "race": 
-                str(protocolDetails['m_playerList'][i]['m_race']),
+                protocolDetails['m_playerList'][i]['m_race'].decode('utf-8'),
             "result":
-                str(protocolDetails['m_playerList'][i]['m_result']),
+                protocolDetails['m_playerList'][i]['m_result'],
             "mmr":
-                str(protocolInitData['m_syncLobbyState']
-                    ['m_userInitialData'][i]['m_scaledRating']),
+                protocolInitData['m_syncLobbyState']
+                    ['m_userInitialData'][i]['m_scaledRating'],
             "highestLeague":
                 highestLeague(protocolInitData['m_syncLobbyState']
                     ['m_userInitialData'][i]['m_highestLeague'])
@@ -77,7 +79,7 @@ def getPlayerCount(protocolDetails):
 
 
 def getMapName(protocolDetails):
-    return protocolDetails['m_title']
+    return str(protocolDetails['m_title'])
 
 
 def getProtocolDetails(protocol, archive):
@@ -115,7 +117,17 @@ def getListOfReplayNames(directory):
     return files
 
 
+def getMatchup(playerInfo):
+    return playerInfo[1]['race'][0] + 'v' + playerInfo[0]['race'][0]
+
+
 def main():
+    # scope = ['https://spreadsheets.google.com/feeds',
+    #         'https://www.googleapis.com/auth/drive']
+    # creds = ServiceAccountCredentials.from_json_keyfile_name('client.json', scope)
+    # client = gspread.authorize(creds)
+    # sheet = client.open("Starcraft2Spreadsheet").sheet1
+
     replays = getListOfReplayNames('replays') # files contains all the sc2replay
     for replay in replays:
         archive = mpyq.MPQArchive(replay)
@@ -124,18 +136,25 @@ def main():
         protocolDetails = getProtocolDetails(protocol, archive)
         protocolInitData = getProtocolInitData(protocol, archive)
 
-        print(getPlayerInfo(protocolDetails, protocolInitData))
-        print(getMapName(protocolDetails))
-        print(getGameDate(protocolDetails))
-        print(getGameTime(header))
+        playerInfo = getPlayerInfo(protocolDetails, protocolInitData)
+        
+        win = playerInfo[1]['result']
+        if win == '2':
+            win = 0
+        mapName = getMapName(protocolDetails)
+        matchup = getMatchup(playerInfo)
+        mymmr = playerInfo[1]['mmr']
+        oppmmr = playerInfo[0]['mmr']
+        date, time = getDateTime(protocolDetails)
+        gameTime = getGameTime(header)
+        
+        
+        print(playerInfo[1]['name'], matchup)
+        
+        #TODO: calculate id
+        # sheet.append_row(['', gameDate, gameTime, matchup, 
+        #     win, mapName, playerInfo[0]['name'], oppmmr, mymmr] )
 
-    scope = ['https://spreadsheets.google.com/feeds',
-            'https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('client.json', scope)
-    client = gspread.authorize(creds)
-    sheet = client.open("Starcraft2Spreadsheet").sheet1
-    list_of_hashes = sheet.get_all_values()
-    print(list_of_hashes)
 
 
 if __name__ == '__main__':

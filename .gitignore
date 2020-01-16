@@ -1,3 +1,4 @@
 s2protocol/
 env/
 client.json
+__pycache__/

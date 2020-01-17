@@ -24,6 +24,8 @@ class ReplayInfo:
                                 archive.read_file('replay.initData'))
 
         self.playerInfo = self.getPlayerInfo()
+        self.playerIndex = self.getPlayerIndex()
+        self.oppIndex = self.getOpponentIndex()
 
 
     def getPlayerInfo(self, playerCount=2):
@@ -71,8 +73,8 @@ class ReplayInfo:
 
 
     # return: ex. TvZ - first letters of players races
-    def getMatchup(self, playerIndex, oppIndex):
-        return self.playerInfo[playerIndex]['race'][0] + 'v' + self.playerInfo[oppIndex]['race'][0]
+    def getMatchup(self):
+        return self.playerInfo[self.playerIndex]['race'][0] + 'v' + self.playerInfo[self.oppIndex]['race'][0]
 
 
     # input: index of the player(in 1v1 => 0 or 1)

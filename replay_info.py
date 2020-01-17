@@ -72,8 +72,7 @@ class ReplayInfo:
 
     # return: ex. TvZ - first letters of players races
     def getMatchup(self, playerIndex, oppIndex):
-        return self.playerInfo[playerIndex]['race'][0] + 'v' 
-            + self.playerInfo[oppIndex]['race'][0]
+        return self.playerInfo[playerIndex]['race'][0] + 'v' + self.playerInfo[oppIndex]['race'][0]
 
 
     # input: index of the player(in 1v1 => 0 or 1)

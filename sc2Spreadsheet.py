@@ -4,6 +4,7 @@ import mpyq
 import spreadsheet_util
 import configuration
 from replay_info import ReplayInfo
+
 # TODO: EXCEL Integration
 
 def getListOfReplayNames(directory):

@@ -61,6 +61,7 @@ def renameAndMoveReplays(directory, replay, win, matchup,
     time = time.replace(':', '-')
     gameDuration = gameDuration.replace(':', '-')
     win = resultAsString(win)
+    #TODO: 
     #\\analyzed\\
     os.rename(replay, ("%s/%s %s %s %s %s %s %s.SC2Replay" 
         %(directory, matchup, win, oppmmr, mapName, gameDuration, date, time)))

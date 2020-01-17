@@ -4,3 +4,4 @@ client.json
 __pycache__/
 .vscode/
 replays/
+commit2changelog.py

@@ -41,26 +41,34 @@ def main():
             matchup = replayInfo.getMatchup(playerIndex, oppIndex)
             win = replayInfo.didPlayerWin(playerIndex)
             mmr = replayInfo.getPlayerMMR(playerIndex)
-            oppmmr = replayInfo.getPlayerMMR(oppIndex)
+            oppmmr = str(replayInfo.getPlayerMMR(oppIndex))
             opphleague = replayInfo.getPlayerHighestLeague(oppIndex)
             date, time = replayInfo.getDateAndTime()
+            mapName = replayInfo.getMapName()
+            gameDuration = replayInfo.getDuration()
+
             archive = ''
                 
             print("INSERTING")
             sheet.append_row([
                     date,
                     time,
-                    replayInfo.getDuration(),
+                    gameDuration,
                     name,
                     mmr,
                     win,
                     matchup,
-                    replayInfo.getMapName(),
+                    mapName,
                     oppname,
                     oppmmr,
                     opphleague,
                 ]) 
-            os.rename(replay, directory + '\\analyzed\\' + 'TESTINGLYL' + 'mmr' + '.SC2Replay')
+            date = date.replace(':', '-')
+            time = time.replace(':', '-')
+            gameDuration = gameDuration.replace(':', '-')
+            # os.rename(replay, directory + '\\analyzed\\' + date + ' ' + time + matchup +  str(mmr) + '.SC2Replay')
+            os.rename(replay, ("%s\\analyzed\\%s %s %s %s %s %s.SC2Replay" 
+                        %(directory, matchup, oppmmr, mapName, gameDuration, date, time)))
         
         
 

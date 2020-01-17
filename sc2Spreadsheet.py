@@ -26,11 +26,13 @@ def resultAsString(result):
 
 def main():
     sheet = spreadsheet_util.getGoogleSheetObject()
+    # iterating through all the directories specified in config
     for directory in configuration.replaysDirectories:
         replays = getListOfReplayNames(directory)
-    
-        print(replays)
+        # iterating through all the replays in specified directories
         for replay in replays:
+            #TODO: I should probably automate player index memes
+            # in the replay info class
             archive = mpyq.MPQArchive(replay)
             replayInfo = ReplayInfo(archive)
             playerIndex = replayInfo.getPlayerIndex()
@@ -65,7 +67,7 @@ def main():
                 ]) 
 
 
-            # Renaming and moving replays
+            # Renaming and moving replays to analyzed folder
             time = time.replace(':', '-')
             gameDuration = gameDuration.replace(':', '-')
             win = resultAsString(win)

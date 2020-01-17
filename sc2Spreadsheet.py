@@ -20,48 +20,44 @@ def getListOfReplayNames(directory):
 
 # TODO: check if this is game end date or not
 
-
-
-
-
-
-
 def main():
     sheet = spreadsheet_util.getGoogleSheetObject()
-    replays = getListOfReplayNames(configuration.replaysDirectory) # files contains all the sc2replay
-    print(replays)
-    for replay in replays:
-        archive = mpyq.MPQArchive(replay)
-        replayInfo = ReplayInfo(archive)
-        playerIndex = replayInfo.getPlayerIndex()
-        oppIndex = replayInfo.getOpponentIndex()
+    for directory in configuration.replaysDirectories:
+        replays = getListOfReplayNames(directory) # files contains all the sc2replay
+    
+        print(replays)
+        for replay in replays:
+            archive = mpyq.MPQArchive(replay)
+            replayInfo = ReplayInfo(archive)
+            playerIndex = replayInfo.getPlayerIndex()
+            oppIndex = replayInfo.getOpponentIndex()
 
-        
-        name = replayInfo.getPlayerName(playerIndex)
-        oppname = replayInfo.getPlayerName(oppIndex)
-        # FIXME: 
-        matchup = replayInfo.getMatchup(playerIndex, oppIndex)
-        win = replayInfo.didPlayerWin(playerIndex)
-        mmr = replayInfo.getPlayerMMR(playerIndex)
-        oppmmr = replayInfo.getPlayerMMR(oppIndex)
-        opphleague = replayInfo.getPlayerHighestLeague(oppIndex)
-        date, time = replayInfo.getDateAndTime()
-        
             
-        print("INSERTING")
-        sheet.append_row([
-               date,
-               time,
-               replayInfo.getDuration(),
-               name,
-               mmr,
-               win,
-               matchup,
-               replayInfo.getMapName(),
-               oppname,
-               oppmmr,
-               opphleague,
-           ]) 
+            name = replayInfo.getPlayerName(playerIndex)
+            oppname = replayInfo.getPlayerName(oppIndex)
+            # FIXME: check matchup
+            matchup = replayInfo.getMatchup(playerIndex, oppIndex)
+            win = replayInfo.didPlayerWin(playerIndex)
+            mmr = replayInfo.getPlayerMMR(playerIndex)
+            oppmmr = replayInfo.getPlayerMMR(oppIndex)
+            opphleague = replayInfo.getPlayerHighestLeague(oppIndex)
+            date, time = replayInfo.getDateAndTime()
+            
+                
+            print("INSERTING")
+            sheet.append_row([
+                    date,
+                    time,
+                    replayInfo.getDuration(),
+                    name,
+                    mmr,
+                    win,
+                    matchup,
+                    replayInfo.getMapName(),
+                    oppname,
+                    oppmmr,
+                    opphleague,
+                ]) 
         
         
 

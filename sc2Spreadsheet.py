@@ -10,6 +10,8 @@ def getListOfReplayNames(directory):
     
     # TODO: sort by date ALSO I SHOUKD USE A PYTHON LIBRARY TO DO THIS
     arr = os.listdir(directory)
+    if 'analyzed' not in arr:
+        os.mkdir(directory + '/analyzed')
     files = []
     for i in range(0,len(arr)):
         if ".SC2Replay" in arr[i]:
@@ -42,7 +44,7 @@ def main():
             oppmmr = replayInfo.getPlayerMMR(oppIndex)
             opphleague = replayInfo.getPlayerHighestLeague(oppIndex)
             date, time = replayInfo.getDateAndTime()
-            
+            archive = ''
                 
             print("INSERTING")
             sheet.append_row([
@@ -58,6 +60,7 @@ def main():
                     oppmmr,
                     opphleague,
                 ]) 
+            os.rename(replay, directory + '\\analyzed\\' + 'TESTINGLYL' + 'mmr' + '.SC2Replay')
         
         
 

@@ -146,7 +146,8 @@ class ReplayInfo:
             return 0
         return 1
 
-
+    # 1v1
+    # return: index of player who's username is not in the config file
     def getOpponentIndex(self):
         if self.getPlayerName(0) in configuration.usernames:
             return 1

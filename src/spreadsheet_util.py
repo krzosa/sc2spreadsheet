@@ -1,23 +1,24 @@
-import gspread
-import configuration
-from oauth2client.service_account import ServiceAccountCredentials
 import re
 import os
 import mpyq
-import configuration
-from replay_info import ReplayInfo
+import gspread
+import configuration as config
+from src.replay_info import ReplayInfo
+from oauth2client.service_account import ServiceAccountCredentials
 
 def getGoogleSheetObject():
     scope = ['https://spreadsheets.google.com/feeds',
             'https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('client.json', scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name(
+        config.googleSpreadsheetCredentials, scope)
     client = gspread.authorize(creds)
-    return client.open("Starcraft2Spreadsheet").sheet1
+    return client.open(config.sheetName).sheet1
+
 
 def insertIntoGoogleSheet():
     sheet = getGoogleSheetObject()
     # iterating through all the directories specified in config
-    for directory in configuration.replaysDirectories:
+    for directory in config.replaysDirectories:
         replays = getListOfReplayNames(directory)
         # iterating through all the replays in specified directories
         for replay in replays:
@@ -60,7 +61,8 @@ def renameAndMoveReplays(directory, replay, win, matchup,
     time = time.replace(':', '-')
     gameDuration = gameDuration.replace(':', '-')
     win = resultAsString(win)
-    os.rename(replay, ("%s\\analyzed\\%s %s %s %s %s %s %s.SC2Replay" 
+    #\\analyzed\\
+    os.rename(replay, ("%s/%s %s %s %s %s %s %s.SC2Replay" 
         %(directory, matchup, win, oppmmr, mapName, gameDuration, date, time)))
 
 

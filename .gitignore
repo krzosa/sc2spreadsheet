@@ -3,3 +3,4 @@ env/
 client.json
 __pycache__/
 .vscode/
+replays/

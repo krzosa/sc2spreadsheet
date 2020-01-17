@@ -1,9 +1,9 @@
-import spreadsheet_util
+import src.spreadsheet_util as usheet
 # TODO: EXCEL Integration
 # TODO: seperate functions for excel and google sheets
 
 def main():
-    spreadsheet_util.insertIntoGoogleSheet()
+    usheet.insertIntoGoogleSheet()
             
 
 if __name__ == '__main__':

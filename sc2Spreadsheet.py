@@ -4,11 +4,9 @@ import mpyq
 import spreadsheet_util
 import configuration
 from replay_info import ReplayInfo
-
+# TODO: EXCEL Integration
 
 def getListOfReplayNames(directory):
-    
-    # TODO: sort by date ALSO I SHOUKD USE A PYTHON LIBRARY TO DO THIS
     arr = os.listdir(directory)
     if 'analyzed' not in arr:
         os.mkdir(directory + '/analyzed')
@@ -16,16 +14,19 @@ def getListOfReplayNames(directory):
     for i in range(0,len(arr)):
         if ".SC2Replay" in arr[i]:
             files.append(directory + '/' + arr[i])
-
     return files
 
 
-# TODO: check if this is game end date or not
+def resultAsString(result):
+    if result == 1:
+        return "WIN"
+    return "LOSS"
+
 
 def main():
     sheet = spreadsheet_util.getGoogleSheetObject()
     for directory in configuration.replaysDirectories:
-        replays = getListOfReplayNames(directory) # files contains all the sc2replay
+        replays = getListOfReplayNames(directory)
     
         print(replays)
         for replay in replays:
@@ -33,7 +34,6 @@ def main():
             replayInfo = ReplayInfo(archive)
             playerIndex = replayInfo.getPlayerIndex()
             oppIndex = replayInfo.getOpponentIndex()
-
             
             name = replayInfo.getPlayerName(playerIndex)
             oppname = replayInfo.getPlayerName(oppIndex)
@@ -46,29 +46,30 @@ def main():
             date, time = replayInfo.getDateAndTime()
             mapName = replayInfo.getMapName()
             gameDuration = replayInfo.getDuration()
-
             archive = ''
                 
             print("INSERTING")
             sheet.append_row([
-                    date,
-                    time,
-                    gameDuration,
-                    name,
-                    mmr,
                     win,
                     matchup,
                     mapName,
-                    oppname,
+                    gameDuration,
+                    mmr,
                     oppmmr,
+                    name,
+                    oppname,
                     opphleague,
+                    date,
+                    time,
                 ]) 
-            date = date.replace(':', '-')
+
+
+            # Renaming and moving replays
             time = time.replace(':', '-')
             gameDuration = gameDuration.replace(':', '-')
-            # os.rename(replay, directory + '\\analyzed\\' + date + ' ' + time + matchup +  str(mmr) + '.SC2Replay')
-            os.rename(replay, ("%s\\analyzed\\%s %s %s %s %s %s.SC2Replay" 
-                        %(directory, matchup, oppmmr, mapName, gameDuration, date, time)))
+            win = resultAsString(win)
+            os.rename(replay, ("%s\\analyzed\\%s %s %s %s %s %s %s.SC2Replay" 
+                        %(directory, matchup, win, oppmmr, mapName, gameDuration, date, time)))
         
         
 

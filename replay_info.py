@@ -72,7 +72,8 @@ class ReplayInfo:
 
     # return: ex. TvZ - first letters of players races
     def getMatchup(self, playerIndex, oppIndex):
-        return self.playerInfo[playerIndex]['race'][0] + 'v' + self.playerInfo[oppIndex]['race'][0]
+        return self.playerInfo[playerIndex]['race'][0] + 'v' 
+            + self.playerInfo[oppIndex]['race'][0]
 
 
     # input: index of the player(in 1v1 => 0 or 1)
@@ -112,8 +113,8 @@ class ReplayInfo:
     # TODO: check if its when the game ended begun
     def getDateAndTime(self):
         date = str(datetime.fromtimestamp(round(
-                self.protocolDetails['m_timeUTC'] / (10 * 1000 * 1000) - 11644473600 - 
-                            ((self.protocolDetails['m_timeLocalOffset'] / 10000000)))))
+            self.protocolDetails['m_timeUTC'] / (10 * 1000 * 1000) - 11644473600 - 
+                ((self.protocolDetails['m_timeLocalOffset'] / 10000000)))))
         return date.split(' ')
 
 

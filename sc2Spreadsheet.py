@@ -1,31 +1,15 @@
-import platform  # to check users operating system
 import re
-import subprocess  # to invoke ls or dir which lists files in a folder
+import os
 import mpyq
 import spreadsheet_util
 import configuration
 from replay_info import ReplayInfo
 
-# TODO: 
-#   loading settings from file
-#   loading files from directory outputing stats
-#   send to spreadsheet
-#   making project modular
-#   make it compatible with different systems
-
 
 def getListOfReplayNames(directory):
     
     # TODO: sort by date ALSO I SHOUKD USE A PYTHON LIBRARY TO DO THIS
-    # pathing problems when pointing at sc2 replay repo
-    if platform.system()=='Windows': 
-        ls = subprocess.run(['cmd.exe','/c', 'dir ' + directory + ' /b /a-d'], capture_output = True,
-            text = True)
-    else:
-        ls = subprocess.run('ls ' + directory, capture_output = True,
-            text = True)
-
-    arr = re.split("\n", ls.stdout)
+    arr = os.listdir(directory)
     files = []
     for i in range(0,len(arr)):
         if ".SC2Replay" in arr[i]:
@@ -45,33 +29,27 @@ def getListOfReplayNames(directory):
 def main():
     sheet = spreadsheet_util.getGoogleSheetObject()
     replays = getListOfReplayNames(configuration.replaysDirectory) # files contains all the sc2replay
+    print(replays)
     for replay in replays:
         archive = mpyq.MPQArchive(replay)
         replayInfo = ReplayInfo(archive)
+        playerIndex = replayInfo.getPlayerIndex()
+        oppIndex = replayInfo.getOpponentIndex()
 
-        if replayInfo.getPlayerName(0) in configuration.usernames:
-            name = replayInfo.getPlayerName(0)
-            oppname = replayInfo.getPlayerName(1)
-            # FIXME: 
-            matchup = replayInfo.getMatchupReverse()
-            win = replayInfo.didPlayerWin(0)
-            mmr = replayInfo.getPlayerMMR(0)
-            oppmmr = replayInfo.getPlayerMMR(1)
-            opphleague = replayInfo.getPlayerHighestLeague(1)
-        else:
-            name = replayInfo.getPlayerName(1)
-            oppname = replayInfo.getPlayerName(0)
-            # FIXME: 
-            matchup = replayInfo.getMatchup()
-            win = replayInfo.didPlayerWin(1)
-            mmr = replayInfo.getPlayerMMR(1)
-            oppmmr = replayInfo.getPlayerMMR(0)
-            opphleague = replayInfo.getPlayerHighestLeague(0)
-            
+        
+        name = replayInfo.getPlayerName(playerIndex)
+        oppname = replayInfo.getPlayerName(oppIndex)
+        # FIXME: 
+        matchup = replayInfo.getMatchup(playerIndex, oppIndex)
+        win = replayInfo.didPlayerWin(playerIndex)
+        mmr = replayInfo.getPlayerMMR(playerIndex)
+        oppmmr = replayInfo.getPlayerMMR(oppIndex)
+        opphleague = replayInfo.getPlayerHighestLeague(oppIndex)
         date, time = replayInfo.getDateAndTime()
+        
+            
         print("INSERTING")
         sheet.append_row([
-                '',
                date,
                time,
                replayInfo.getDuration(),
@@ -84,11 +62,6 @@ def main():
                oppmmr,
                opphleague,
            ]) 
-        
-
-
-
-        #TODO: calculate id
         
         
 

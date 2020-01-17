@@ -1,4 +1,5 @@
 import time
+import configuration
 from enum import Enum
 from datetime import datetime
 from s2protocol import versions
@@ -70,13 +71,8 @@ class ReplayInfo:
 
 
     # return: ex. TvZ - first letters of players races
-    def getMatchup(self):
-        return self.playerInfo[1]['race'][0] + 'v' + self.playerInfo[0]['race'][0]
-
-
-    # return: ex. ZvT
-    def getMatchupReverse(self):
-        return self.playerInfo[0]['race'][0] + 'v' + self.playerInfo[1]['race'][0]
+    def getMatchup(self, playerIndex, oppIndex):
+        return self.playerInfo[playerIndex]['race'][0] + 'v' + self.playerInfo[oppIndex]['race'][0]
 
 
     # input: index of the player(in 1v1 => 0 or 1)
@@ -139,6 +135,20 @@ class ReplayInfo:
     # return: 1 if player won, 0 if player lost 
     def didPlayerWin(self, playerIndex):
         if(self.playerInfo[playerIndex]['result'] == 1):
+            return 1
+        return 0
+
+    
+    # 1v1
+    # return: index of player who's username you gave in config file
+    def getPlayerIndex(self):
+        if self.getPlayerName(0) in configuration.usernames:
+            return 0
+        return 1
+
+
+    def getOpponentIndex(self):
+        if self.getPlayerName(0) in configuration.usernames:
             return 1
         return 0
 

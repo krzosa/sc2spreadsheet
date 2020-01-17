@@ -1,4 +1,4 @@
-# Usernames of all accounts that you play on
+# Usernames of all accounts that you play on (ingame username not battle.net)
 usernames = ["Sevnin", "Owen"]
 
 # paths to the directories with the replays

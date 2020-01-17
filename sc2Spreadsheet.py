@@ -6,6 +6,8 @@ import configuration
 from replay_info import ReplayInfo
 
 # TODO: EXCEL Integration
+# TODO: seperate functions for excel and google sheets
+
 
 def getListOfReplayNames(directory):
     arr = os.listdir(directory)

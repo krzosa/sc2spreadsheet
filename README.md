@@ -11,7 +11,7 @@ and lastly renames them to something alot more informative.
 ## How to use (for non programmers)(windows 10)
 1. download [python 3.8.1](https://www.python.org/downloads/)
     * important! during installation check that you want to add it to PATH!
-1. download [this sc2spreadsheet)[https://github.com/krzosa/sc2spreadsheet/releases/tag/v0.1]
+1. download [sc2spreadsheet](https://github.com/krzosa/sc2spreadsheet/releases/tag/v0.1)
 1. unzip the archive to wherever you like
 1. run setup.py(it downloads external modules that I used to make this work)
 1. run sc2spreadsheet.py - it should flash you a big error and by the end

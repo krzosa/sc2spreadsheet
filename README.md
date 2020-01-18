@@ -9,8 +9,8 @@ and lastly renames them to something alot more informative.
     Python 3.4+ should work
 
 ## How to use (for non programmers)(windows 10)
-* download (python 3.8.1)[https://www.python.org/downloads/] 
-    * important! during installation check that you want to add it to PATH
+* download [python 3.8.1](https://www.python.org/downloads/)
+    * important! during installation check that you want to add it to PATH!
 * download this repository by clicking the green button 
 thats located on the top-right side of the file list
 * unzip the archive to wherever you like
@@ -19,13 +19,13 @@ thats located on the top-right side of the file list
 it should be saying that "client_secret.json" is missing
     * if thats true then you are doing great !!
 ## Google spreadsheet integration (hard)
-* (follow this tutorial. Start reading at "Ok, let's begin")[https://medium.com/@denisluiz/python-with-google-sheets-service-account-step-by-step-8f74c26ed28e]
+* [follow this tutorial. Start reading at "Ok, let's begin"](https://medium.com/@denisluiz/python-with-google-sheets-service-account-step-by-step-8f74c26ed28e)
     * Stop following after you share your spreadsheet.
 * you should at this point have your client_secret.json file
-in the main folder of sc2spreadsheet(near setup files, sc2spreadsheet file etc.)
-* now step into src, open configuration file and fill it out!
+in the sc2spreadsheet folder
+* now step into sc2spreadsheet folder, open configuration file and fill it out!
 * you are ready to run sc2spreadsheet! Just double-click
-sc2spreadsheet.bat. 
+sc2spreadsheet.bat
     * For convenience you can make a shortcut out of
 it -> send it to desktop
 * thats all ! gg wp

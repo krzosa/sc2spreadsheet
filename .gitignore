@@ -1,6 +1,7 @@
 s2protocol/
 env/
 client.json
+client_secret.json
 credentials.json
 __pycache__/
 .vscode/

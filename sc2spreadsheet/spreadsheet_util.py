@@ -39,7 +39,7 @@ def insertIntoGoogleSheet():
                 
             print("INSERTING " + replay)
             sheet.append_row([
-                    replayInfo.didPlayerWin(playerIndex),
+                    resultAsString(replayInfo.didPlayerWin(playerIndex)),
                     replayInfo.getMatchup(),
                     replayInfo.getMapName(),
                     replayInfo.getDuration(),

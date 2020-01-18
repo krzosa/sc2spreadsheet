@@ -6,6 +6,10 @@ import configuration as config
 from replay_info import ReplayInfo
 from oauth2client.service_account import ServiceAccountCredentials
 
+
+# return: gspread object that represents your google sheet
+# it allows you to edit it however you like and also
+# take information from it
 def getGoogleSheetObject():
     scope = ['https://spreadsheets.google.com/feeds',
             'https://www.googleapis.com/auth/drive']
@@ -15,6 +19,9 @@ def getGoogleSheetObject():
     return client.open(config.sheetName).sheet1
 
 
+# this function iterates through all the replays in the specified
+# directories appends them into your google spreadsheet
+# and lastly renames those replays > moves them into analyzed folder
 def insertIntoGoogleSheet():
     sheet = getGoogleSheetObject()
     # iterating through all the directories specified in config
@@ -30,7 +37,7 @@ def insertIntoGoogleSheet():
             date, time = replayInfo.getDateAndTime()
             archive = ''
                 
-            print("INSERTING")
+            print("INSERTING " + replay)
             sheet.append_row([
                     replayInfo.didPlayerWin(playerIndex),
                     replayInfo.getMatchup(),
@@ -61,9 +68,7 @@ def renameAndMoveReplays(directory, replay, win, matchup,
     time = time.replace(':', '-')
     gameDuration = gameDuration.replace(':', '-')
     win = resultAsString(win)
-    #TODO: 
-    #\\analyzed\\
-    os.rename(replay, ("%s/%s %s %s %s %s %s %s.SC2Replay" 
+    os.rename(replay, ("%s\\analyzed\\%s %s %s %s %s %s %s.SC2Replay" 
         %(directory, matchup, win, oppmmr, mapName, gameDuration, date, time)))
 
 

@@ -1,5 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+## 2020-01-18
+    added: batch files, some more comments  
+    added: extensive how to use  
+    added: setup.py  
+    fixed: readme  
 ## 2020-01-17
     added: basic file renaming and file moving  
     added: basic readme and changelog  

@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file.
 ## 2020-01-17
     added: basic file renaming and file moving  
+    added: basic readme and changelog  
     added: comment  
     added: googlesheet config in configuration file  
     added: groundwork for excel integration  

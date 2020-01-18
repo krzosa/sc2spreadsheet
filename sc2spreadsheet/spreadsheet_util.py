@@ -3,7 +3,7 @@ import os
 import mpyq
 import gspread
 import configuration as config
-from src.replay_info import ReplayInfo
+from replay_info import ReplayInfo
 from oauth2client.service_account import ServiceAccountCredentials
 
 def getGoogleSheetObject():

@@ -1,7 +1,9 @@
 s2protocol/
 env/
 client.json
+credentials.json
 __pycache__/
 .vscode/
 replays/
 commit2changelog.py
+sc2spreadsheet.egg-info

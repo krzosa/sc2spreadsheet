@@ -1,4 +1,4 @@
-import src.spreadsheet_util as usheet
+import spreadsheet_util as usheet
 # TODO: EXCEL Integration
 # TODO: seperate functions for excel and google sheets
 

@@ -34,7 +34,7 @@ it -> send it to desktop
 *  [I suggest sorting your replays by date and then by time](https://support.google.com/docs/answer/3540681?co=GENIE.Platform%3DDesktop&hl=en)
 
 ## Example of usage:
-[spreadsheet](https://github.com/krzosa/sc2spreadsheet/blob/master/img.png)
-[files](https://github.com/krzosa/sc2spreadsheet/blob/master/imgfiles.png)
+![spreadsheet](https://github.com/krzosa/sc2spreadsheet/blob/master/img.png)
+![files](https://github.com/krzosa/sc2spreadsheet/blob/master/imgfiles.png)
 
 

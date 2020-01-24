@@ -11,12 +11,21 @@ from oauth2client.service_account import ServiceAccountCredentials
 # it allows you to edit it however you like and also
 # take information from it
 def getGoogleSheetObject():
-    scope = ['https://spreadsheets.google.com/feeds',
-            'https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name(
-        config.googleSpreadsheetCredentials, scope)
-    client = gspread.authorize(creds)
-    return client.open(config.sheetName).sheet1
+    try:
+        scope = ['https://spreadsheets.google.com/feeds',
+                'https://www.googleapis.com/auth/drive']
+        creds = ServiceAccountCredentials.from_json_keyfile_name(
+            config.googleSpreadsheetCredentials, scope)
+        client = gspread.authorize(creds)
+        return client.open(config.sheetName).sheet1
+    except:
+        # TODO: make exception class MEME
+        print("""
+client_secret.json was not found. Make sure that it's in sc2spreadsheet folder.
+if you are having trouble refer to the second part of the github guide.
+        """)
+        exit()
+     
 
 
 # this function iterates through all the replays in the specified
@@ -36,31 +45,32 @@ def insertIntoGoogleSheet():
             
             date, time = replayInfo.getDateAndTime()
             archive = ''
-                
-            print("INSERTING " + replay)
-            sheet.append_row([
-                    resultAsString(replayInfo.didPlayerWin(playerIndex)),
-                    replayInfo.getMatchup(),
-                    replayInfo.getMapName(),
-                    replayInfo.getDuration(),
-                    replayInfo.getPlayerMMR(playerIndex),
-                    str(replayInfo.getPlayerMMR(oppIndex)),
-                    replayInfo.getPlayerName(playerIndex),
-                    replayInfo.getPlayerName(oppIndex),
-                    replayInfo.getPlayerHighestLeague(oppIndex),
-                    date,
-                    time,
-                ]) 
-                
-            renameAndMoveReplays(directory, 
-                                replay, 
-                                replayInfo.didPlayerWin(playerIndex), 
-                                replayInfo.getMatchup(),
-                                str(replayInfo.getPlayerMMR(oppIndex)), 
-                                replayInfo.getMapName(), 
-                                date, 
-                                time, 
-                                replayInfo.getDuration())
+
+            if(replayInfo.getPlayerCount() == 2 and replayInfo.getPlayerHighestLeague(oppIndex) != "VSAI"):    
+                print("INSERTING " + replay)
+                sheet.append_row([
+                        resultAsString(replayInfo.didPlayerWin(playerIndex)),
+                        replayInfo.getMatchup(),
+                        replayInfo.getMapName(),
+                        replayInfo.getDuration(),
+                        replayInfo.getPlayerMMR(playerIndex),
+                        str(replayInfo.getPlayerMMR(oppIndex)),
+                        replayInfo.getPlayerName(playerIndex),
+                        replayInfo.getPlayerName(oppIndex),
+                        replayInfo.getPlayerHighestLeague(oppIndex),
+                        date,
+                        time,
+                    ]) 
+                    
+                renameAndMoveReplays(directory, 
+                                    replay, 
+                                    replayInfo.didPlayerWin(playerIndex), 
+                                    replayInfo.getMatchup(),
+                                    str(replayInfo.getPlayerMMR(oppIndex)), 
+                                    replayInfo.getMapName(), 
+                                    date, 
+                                    time, 
+                                    replayInfo.getDuration())
 
 
 def renameAndMoveReplays(directory, replay, win, matchup, 
@@ -72,6 +82,7 @@ def renameAndMoveReplays(directory, replay, win, matchup,
         %(directory, matchup, win, oppmmr, mapName, gameDuration, date, time)))
 
 
+# return: names of all the files in the {directory}
 def getListOfReplayNames(directory):
     arr = os.listdir(directory)
     if 'analyzed' not in arr:
@@ -83,6 +94,8 @@ def getListOfReplayNames(directory):
     return files
 
 
+# takes match result -> 1, 2, 3 etc.
+# return: WIN or LOSS
 def resultAsString(result):
     if result == 1:
         return "WIN"

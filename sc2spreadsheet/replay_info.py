@@ -32,21 +32,17 @@ class ReplayInfo:
         playerInfo = []
         for i in range(0, playerCount):
             playerInfo.append({
-                "name": 
-                    self.protocolDetails['m_playerList']
-                                [i]['m_name'].decode('utf-8'),
-                "race": 
-                    self.protocolDetails['m_playerList']
-                                [i]['m_race'].decode('utf-8'),
-                "result":
-                    self.protocolDetails['m_playerList']
-                                [i]['m_result'],
-                "mmr":
-                    self.protocolInitData['m_syncLobbyState']['m_userInitialData']
-                                [i]['m_scaledRating'],
-                "highestLeague":
-                    self.highestLeague(self.protocolInitData['m_syncLobbyState']
-                                ['m_userInitialData'][i]['m_highestLeague'])
+                "name": self.protocolDetails['m_playerList']
+                                            [i]['m_name'].decode('utf-8'),
+                "race": self.protocolDetails['m_playerList']
+                                            [i]['m_race'].decode('utf-8'),
+                "result": self.protocolDetails['m_playerList']
+                                              [i]['m_result'],
+                "mmr": self.protocolInitData['m_syncLobbyState']['m_userInitialData']
+                                            [i]['m_scaledRating'],
+                "highestLeague": self.highestLeague(self.protocolInitData['m_syncLobbyState']
+                                                                         ['m_userInitialData']
+                                                                         [i]['m_highestLeague'])
             })
         return playerInfo
 

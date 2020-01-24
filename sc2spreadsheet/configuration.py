@@ -6,7 +6,7 @@ usernames = ["Sevnin", "Owen"]
 # ex. C:\Users\sevni\Documents\StarCraft II\Accounts\102433852\2-S2-1-2701509\Replays\Multiplayer
 # format [r"pathToReplays1", r"pathToReplays2", r"pathToReplays3"] etc.
 # ex. 
-# replaysDirectories = [r"C:\Users\sevni\Documents\StarCraft II\Accounts\102433852\2-S2-1-2701509\Replays\Multiplayer",
+# replaysDirectories = [r"C:\Users  \sevni\Documents\StarCraft II\Accounts\102433852\2-S2-1-2701509\Replays\Multiplayer",
 #                       r"C:\Users\sevni\Documents\StarCraft II\Accounts\461713565\2-S2-1-7737411\Replays\Multiplayer"  ]
 replaysDirectories = [r"..\replays"]
 
